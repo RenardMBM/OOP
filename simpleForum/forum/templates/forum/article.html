@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block Title %}Profile{% endblock %}
+{% block Head %}
+    <style>
+        main, #comments {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.5rem;
+            margin: 0 auto 2rem;
+        }
+        .top {
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .top img {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 5rem;
+        }
+        h1 {
+            font-weight: bold;
+            font-size: 2.5rem;
+        }
+        main p {
+            font-size: 1.5rem;
+        }
+
+        #comments form {
+            width: 100%;
+        }
+        #comments textarea {
+            font-size: 1.6rem;
+            width: 100%;
+            height: 8rem;
+            resize: none;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .buttonOut {
+            text-align: right;
+        }
+        .buttonOut input {
+            width: auto;
+            margin-bottom: 0;
+            padding: 0 2rem;
+            font-size: 1.5rem;
+        }
+        .comment{
+            font-size: 1.6rem;
+        }
+        .comment .author {
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: black;
+        }
+        .comment img {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 5rem;
+            margin-right: 1rem;
+        }
+    </style>
+{% endblock %}
+{% block Content %}
+    <main class="col-md-10 col-12">
+        <div class="top">
+            <span>
+                <img src="/media/{{ article.author.profile.image }}" alt="Profile photo">
+                <span id="name">
+                    {{ article.author.profile.name }}
+                </span>
+            </span>
+            <span>
+                {{ article.date_created }}
+            </span>
+        </div>
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.content }}</p>
+    </main>
+    <div class="col-md-10 col-12" id="comments">
+        <h2>Comments ({{ comments.count }})</h2>
+        {% if user.is_active %}
+            <form action="comment/" method="post">
+            {% csrf_token %}
+            {{ form.content }}
+            <div class="buttonOut">
+                <input type="submit" value="Send">
+            </div>
+        </form>
+        {% endif %}
+
+        {% for comment in comments %}
+        <div class="comment">
+            <a class="author" href="/user/{{ comment.author.id }}">
+                <img src="/media/{{ comment.author.profile.image }}" alt="">
+                <span>{{ comment.author.profile.name }} • {{ comment.date_created }}</span>
+            </a>
+            <p>{{ comment.content }}</p>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
